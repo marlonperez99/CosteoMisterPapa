@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mister Papa · Calculadora de Costos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap');
+
+:root{
+  --amarillo:#FFC400;
+  --amarillo-suave:#FFE99A;
+  --negro:#111111;
+  --negro-2:#1d1d1d;
+  --gris:#6b6b6b;
+  --gris-claro:#f4f4f0;
+  --linea:#e4e4dc;
+  --verde:#1f9d55;
+  --rojo:#d64545;
+  --naranja:#e8830c;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--gris-claro);
+  color:var(--negro);
+  line-height:1.5;
+  padding:0 0 60px;
+}
+
+/* ---------- ENCABEZADO ---------- */
+.hero{
+  background:var(--negro);
+  color:#fff;
+  padding:34px 22px 30px;
+  position:relative;
+  overflow:hidden;
+  border-bottom:6px solid var(--amarillo);
+}
+.hero::before{
+  content:"";
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 22px,rgba(255,196,0,.06) 22px,rgba(255,196,0,.06) 44px);
+}
+.hero-inner{position:relative;max-width:920px;margin:0 auto}
+.logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(44px,9vw,76px);
+  line-height:.86;
+  letter-spacing:1px;
+}
+.logo .papa{color:var(--amarillo)}
+.tag{
+  display:inline-block;
+  margin-top:14px;
+  background:var(--amarillo);
+  color:var(--negro);
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:.5px;
+  padding:6px 14px;
+  border-radius:30px;
+  text-transform:uppercase;
+}
+.sub{margin-top:12px;color:#bdbdbd;font-size:15px;max-width:560px}
+
+.wrap{max-width:920px;margin:0 auto;padding:0 16px}
+
+/* ---------- TARJETAS ---------- */
+.card{
+  background:#fff;
+  border-radius:16px;
+  border:1px solid var(--linea);
+  margin-top:18px;
+  overflow:hidden;
+  box-shadow:0 1px 0 rgba(0,0,0,.02);
+}
+.card-head{
+  display:flex;align-items:center;gap:10px;
+  padding:16px 18px;
+  background:var(--negro);
+  color:#fff;
+}
+.card-head .n{
+  width:26px;height:26px;flex:0 0 26px;
+  background:var(--amarillo);color:var(--negro);
+  border-radius:50%;
+  display:grid;place-items:center;
+  font-family:'Bebas Neue',sans-serif;font-size:18px;
+  padding-top:2px;
+}
+.card-head h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:23px;letter-spacing:.5px;font-weight:400;
+}
+.card-body{padding:18px}
+
+/* ---------- CONTROLES ---------- */
+label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}
+.hint{font-size:12.5px;color:var(--gris);font-weight:400;margin-bottom:12px}
+input,select{
+  font-family:inherit;font-size:15px;
+  width:100%;padding:10px 12px;
+  border:1.5px solid var(--linea);border-radius:9px;
+  background:#fff;color:var(--negro);
+  transition:border-color .15s;
+}
+input:focus,select:focus{outline:none;border-color:var(--amarillo)}
+input[type=number]{text-align:right}
+
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.row > div{flex:1;min-width:120px}
+
+/* ---------- TABLA INGREDIENTES ---------- */
+.ing-head,.ing-row{
+  display:grid;
+  grid-template-columns:1.7fr 1fr .8fr 1fr .8fr .9fr 30px;
+  gap:8px;align-items:center;
+}
+.ing-head{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  color:var(--gris);letter-spacing:.3px;
+  padding:0 2px 8px;
+}
+.ing-row{margin-bottom:8px}
+.ing-row input,.ing-row select{padding:8px 9px;font-size:14px}
+.ing-cost{
+  text-align:right;font-weight:700;font-size:14px;
+  padding:8px 6px;background:var(--amarillo-suave);
+  border-radius:7px;color:var(--negro);
+}
+.del{
+  border:none;background:none;cursor:pointer;
+  color:var(--rojo);font-size:20px;line-height:1;
+  width:30px;height:30px;border-radius:7px;
+}
+.del:hover{background:#fce8e8}
+
+.btn{
+  font-family:inherit;font-weight:700;font-size:14px;
+  cursor:pointer;border:none;border-radius:10px;
+  padding:11px 18px;transition:transform .1s,background .15s;
+}
+.btn:active{transform:scale(.97)}
+.btn-line{background:#fff;border:1.5px dashed var(--negro);color:var(--negro)}
+.btn-line:hover{background:var(--amarillo-suave)}
+.btn-yellow{background:var(--amarillo);color:var(--negro)}
+.btn-yellow:hover{background:#ffd23d}
+.btn-dark{background:var(--negro);color:#fff}
+.btn-dark:hover{background:#000}
+.btn-ghost{background:var(--gris-claro);color:var(--negro)}
+
+.add-wrap{margin-top:8px}
+
+/* ---------- RESULTADOS ---------- */
+.results{
+  background:var(--negro);color:#fff;border-radius:16px;
+  margin-top:18px;padding:6px;
+}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.res-box{padding:20px 18px;border-radius:12px}
+.res-box .lbl{font-size:12px;color:#bdbdbd;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.res-box .val{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;margin-top:6px}
+.res-box .val small{font-size:20px;opacity:.7}
+.res-cost .val{color:#fff}
+.res-price{background:var(--amarillo)}
+.res-price .lbl{color:#6b5400}
+.res-price .val{color:var(--negro)}
+.res-detail{
+  display:flex;justify-content:space-between;gap:10px;
+  padding:14px 18px;flex-wrap:wrap;
+}
+.chip{
+  background:rgba(255,255,255,.08);
+  padding:8px 12px;border-radius:9px;font-size:13px;
+  display:flex;flex-direction:column;gap:2px;
+}
+.chip b{font-size:17px;font-family:'Bebas Neue',sans-serif;font-weight:400}
+.chip .ok{color:#7ee2a8}
+.chip .warn{color:#ffb86b}
+.chip .bad{color:#ff8d8d}
+
+/* slider */
+.slider-wrap{margin-top:4px}
+.slider-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.slider-top b{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--negro)}
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:8px;border-radius:8px;
+  background:linear-gradient(90deg,var(--amarillo) var(--p,30%),var(--linea) var(--p,30%));
+  padding:0;border:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:24px;height:24px;border-radius:50%;
+  background:var(--negro);border:3px solid var(--amarillo);cursor:pointer;
+}
+input[type=range]::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--negro);border:3px solid var(--amarillo);cursor:pointer;
+}
+
+/* recetas guardadas */
+.saved-list{display:flex;flex-direction:column;gap:8px}
+.saved-item{
+  display:flex;align-items:center;gap:10px;
+  border:1px solid var(--linea);border-radius:11px;
+  padding:11px 13px;
+}
+.saved-item .nm{font-weight:700;flex:1}
+.saved-item .meta{font-size:13px;color:var(--gris)}
+.mini{padding:7px 11px;font-size:13px;border-radius:8px}
+.empty{color:var(--gris);font-size:14px;text-align:center;padding:14px}
+
+.foot{text-align:center;color:var(--gris);font-size:12.5px;margin-top:26px}
+
+/* ---------- FICHA PDF ---------- */
+#printArea{display:none}
+.psheet{font-family:'DM Sans',sans-serif;color:#111}
+.phero{background:#111;color:#fff;padding:22px 24px;border-bottom:5px solid #FFC400}
+.phero .plogo{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:.9}
+.phero .plogo span{color:#FFC400}
+.phero .pkind{color:#FFC400;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+.pbody{padding:22px 24px}
+.ptitle{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;margin-bottom:2px}
+.pmeta{color:#6b6b6b;font-size:13px;margin-bottom:18px}
+.psec{font-family:'Bebas Neue',sans-serif;font-size:20px;margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid #FFC400}
+table.ptab{width:100%;border-collapse:collapse;font-size:13px}
+table.ptab th{text-align:left;background:#f4f4f0;padding:7px 9px;font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:#6b6b6b;border-bottom:1px solid #e4e4dc}
+table.ptab th.r,table.ptab td.r{text-align:right}
+table.ptab td{padding:7px 9px;border-bottom:1px solid #eee}
+table.ptab tr.total td{font-weight:700;border-top:2px solid #111;background:#fffaf0}
+.pbig{display:flex;gap:10px;margin-top:18px}
+.pbox{flex:1;border:2px solid #111;border-radius:12px;padding:14px 16px}
+.pbox.gold{background:#FFC400;border-color:#FFC400}
+.pbox .pl{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#6b6b6b;font-weight:700}
+.pbox.gold .pl{color:#6b5400}
+.pbox .pv{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;margin-top:3px}
+.pchips{display:flex;gap:18px;margin-top:14px;font-size:13px;flex-wrap:wrap}
+.pchips b{font-family:'Bebas Neue',sans-serif;font-size:18px;font-weight:400}
+.pfoot{margin-top:24px;padding-top:12px;border-top:1px solid #e4e4dc;color:#6b6b6b;font-size:12px;text-align:center}
+
+@media print{
+  @page{margin:12mm}
+  body{background:#fff;padding:0}
+  body > *{display:none !important}
+  #printArea{display:block !important}
+  .pbox,.pbox.gold,table.ptab th,tr.total td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .phero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+@media(max-width:680px){
+  .ing-head{display:none}
+  .ing-row{
+    grid-template-columns:1fr 1fr;
+    gap:6px;padding:12px;border:1px solid var(--linea);
+    border-radius:11px;background:#fafaf7;
+  }
+  .ing-row .ing-cost{grid-column:1/2}
+  .ing-row .del{grid-column:2/3;justify-self:end}
+  .res-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="logo">MISTER <span class="papa">PAPA</span></div>
+    <span class="tag">🍟 Calculadora de Costos de Menú</span>
+    <p class="sub">Saca el costo real de cada salchipapa desde sus ingredientes y descubre el precio justo para vender con buena ganancia.</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 1. PLATILLO -->
+  <div class="card">
+    <div class="card-head"><span class="n">1</span><h2>¿Qué platillo vas a costear?</h2></div>
+    <div class="card-body">
+      <label for="platillo">Nombre del platillo</label>
+      <div class="hint">Elige uno del menú o escribe el tuyo.</div>
+      <div class="row">
+        <div style="flex:2">
+          <input id="platillo" list="platillos" placeholder="Ej. Salchipapa Clásica">
+          <datalist id="platillos">
+            <option>Salchipapa Clásica</option>
+            <option>Salchipapa Chorizo</option>
+            <option>Salchipapa Pulled Pork</option>
+            <option>Salchipapa Cochinita Pibil</option>
+            <option>Salchipapa Pollo</option>
+            <option>Salchipapa Chicharrón</option>
+            <option>Salchipapa Costillitas BBQ</option>
+          </datalist>
+        </div>
+        <div>
+          <label for="porciones" style="font-weight:700">Porciones que rinde</label>
+          <input id="porciones" type="number" value="1" min="1" step="1">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. INGREDIENTES -->
+  <div class="card">
+    <div class="card-head"><span class="n">2</span><h2>Ingredientes de la receta</h2></div>
+    <div class="card-body">
+      <div class="hint">Anota cuánto te costó <b>la compra completa</b> (ej. 1 libra de papa a Q6) y cuánto <b>usas en esta receta</b>. La app calcula el costo automáticamente.</div>
+      <div class="ing-head">
+        <span>Ingrediente</span>
+        <span>Costo compra (Q)</span>
+        <span>Cantidad</span>
+        <span>Unidad</span>
+        <span>Usas</span>
+        <span>Costo</span>
+        <span></span>
+      </div>
+      <div id="ingredientes"></div>
+      <div class="add-wrap">
+        <button class="btn btn-line" onclick="addIng()">＋ Agregar ingrediente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. COSTOS EXTRA -->
+  <div class="card">
+    <div class="card-head"><span class="n">3</span><h2>Costos adicionales por porción</h2></div>
+    <div class="card-body">
+      <div class="hint">Lo que no es ingrediente pero suma a cada orden.</div>
+      <div class="row">
+        <div>
+          <label>Empaque (Q)</label>
+          <input id="empaque" type="number" value="2.50" min="0" step="0.25" oninput="calc()">
+        </div>
+        <div>
+          <label>Gas / energía (Q)</label>
+          <input id="gas" type="number" value="0.75" min="0" step="0.25" oninput="calc()">
+        </div>
+        <div>
+          <label>Mano de obra (Q)</label>
+          <input id="mano" type="number" value="0" min="0" step="0.25" oninput="calc()">
+        </div>
+        <div>
+          <label>Otros (Q)</label>
+          <input id="otros" type="number" value="0" min="0" step="0.25" oninput="calc()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. FOOD COST -->
+  <div class="card">
+    <div class="card-head"><span class="n">4</span><h2>¿Cuánto quieres que pese el costo?</h2></div>
+    <div class="card-body">
+      <div class="hint">El <b>food cost objetivo</b> es el % que representa el costo dentro del precio de venta. En comida rápida lo sano es entre <b>28% y 35%</b>. Mientras más bajo, más ganas.</div>
+      <div class="slider-wrap">
+        <div class="slider-top">
+          <span style="font-weight:700;font-size:13px">Food cost objetivo</span>
+          <b id="fcLabel">30%</b>
+        </div>
+        <input id="foodcost" type="range" min="20" max="50" value="30" oninput="calc()">
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div class="results" id="results">
+    <div class="res-grid">
+      <div class="res-box res-cost">
+        <div class="lbl">Costo por porción</div>
+        <div class="val"><small>Q</small><span id="rCosto">0.00</span></div>
+      </div>
+      <div class="res-box res-price">
+        <div class="lbl">💰 Precio sugerido de venta</div>
+        <div class="val"><small>Q</small><span id="rPrecio">0.00</span></div>
+      </div>
+    </div>
+    <div class="res-detail">
+      <div class="chip"><span>Ganancia por porción</span><b id="rGanancia" class="ok">Q0.00</b></div>
+      <div class="chip"><span>Margen bruto</span><b id="rMargen" class="ok">0%</b></div>
+      <div class="chip"><span>Costo de ingredientes</span><b id="rIng">Q0.00</b></div>
+      <div class="chip"><span>Costos adicionales</span><b id="rExtra">Q0.00</b></div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+    <button class="btn btn-yellow" style="flex:1" onclick="guardar()">💾 Guardar</button>
+    <button class="btn btn-dark" style="flex:1" onclick="exportarPDF()">📄 Exportar PDF</button>
+    <button class="btn btn-ghost" onclick="nueva()">＋ Nueva</button>
+  </div>
+
+  <!-- 5. RECETAS GUARDADAS -->
+  <div class="card">
+    <div class="card-head"><span class="n">5</span><h2>Mis recetas guardadas</h2></div>
+    <div class="card-body">
+      <div id="savedList" class="saved-list"></div>
+    </div>
+  </div>
+
+  <p class="foot">Mister Papa · @MisterPapa.GT · Precios en Quetzales (Q)</p>
+</div>
+
+<!-- FICHA PARA PDF -->
+<div id="printArea"><div class="psheet" id="printSheet"></div></div>
+
+<script>
+const UNIDADES=['g','kg','ml','L','unidad','libra','onza','taza','cda'];
+
+function ingTemplate(d={}){
+  const div=document.createElement('div');
+  div.className='ing-row';
+  div.innerHTML=`
+    <input class="i-nom" placeholder="Ej. Papa" value="${d.nom||''}" oninput="calc()">
+    <input class="i-costo" type="number" min="0" step="0.25" placeholder="0.00" value="${d.costo??''}" oninput="calc()">
+    <input class="i-cant" type="number" min="0" step="0.01" placeholder="1" value="${d.cant??''}" oninput="calc()">
+    <select class="i-uni" onchange="calc()">${UNIDADES.map(u=>`<option ${d.uni===u?'selected':''}>${u}</option>`).join('')}</select>
+    <input class="i-usa" type="number" min="0" step="0.01" placeholder="0" value="${d.usa??''}" oninput="calc()">
+    <div class="ing-cost">Q0.00</div>
+    <button class="del" onclick="this.closest('.ing-row').remove();calc()" title="Quitar">×</button>`;
+  return div;
+}
+function addIng(d){document.getElementById('ingredientes').appendChild(ingTemplate(d));calc();}
+
+function calc(){
+  let ing=0;
+  document.querySelectorAll('.ing-row').forEach(r=>{
+    const costo=parseFloat(r.querySelector('.i-costo').value)||0;
+    const cant=parseFloat(r.querySelector('.i-cant').value)||0;
+    const usa=parseFloat(r.querySelector('.i-usa').value)||0;
+    const c=(cant>0)?(costo/cant)*usa:0;
+    r.querySelector('.ing-cost').textContent='Q'+c.toFixed(2);
+    ing+=c;
+  });
+  const porciones=Math.max(1,parseInt(document.getElementById('porciones').value)||1);
+  const ingPorPorcion=ing/porciones;
+  const extra=['empaque','gas','mano','otros'].reduce((s,id)=>s+(parseFloat(document.getElementById(id).value)||0),0);
+  const costoTotal=ingPorPorcion+extra;
+
+  const fc=parseInt(document.getElementById('foodcost').value);
+  document.getElementById('fcLabel').textContent=fc+'%';
+  document.getElementById('foodcost').style.setProperty('--p',((fc-20)/30*100)+'%');
+
+  const precio=costoTotal/(fc/100);
+  const ganancia=precio-costoTotal;
+  const margen=precio>0?(ganancia/precio*100):0;
+
+  document.getElementById('rCosto').textContent=costoTotal.toFixed(2);
+  document.getElementById('rPrecio').textContent=precio.toFixed(2);
+  document.getElementById('rIng').textContent='Q'+ingPorPorcion.toFixed(2);
+  document.getElementById('rExtra').textContent='Q'+extra.toFixed(2);
+  document.getElementById('rGanancia').textContent='Q'+ganancia.toFixed(2);
+  const m=document.getElementById('rMargen');
+  m.textContent=margen.toFixed(0)+'%';
+  m.className=margen>=65?'ok':margen>=50?'warn':'bad';
+}
+
+/* ---------- PERSISTENCIA ---------- */
+function recetaActual(){
+  const ings=[...document.querySelectorAll('.ing-row')].map(r=>({
+    nom:r.querySelector('.i-nom').value,
+    costo:r.querySelector('.i-costo').value,
+    cant:r.querySelector('.i-cant').value,
+    uni:r.querySelector('.i-uni').value,
+    usa:r.querySelector('.i-usa').value
+  }));
+  return {
+    platillo:document.getElementById('platillo').value||'Sin nombre',
+    porciones:document.getElementById('porciones').value,
+    empaque:document.getElementById('empaque').value,
+    gas:document.getElementById('gas').value,
+    mano:document.getElementById('mano').value,
+    otros:document.getElementById('otros').value,
+    foodcost:document.getElementById('foodcost').value,
+    ings,
+    precio:document.getElementById('rPrecio').textContent,
+    costo:document.getElementById('rCosto').textContent
+  };
+}
+
+function guardar(){
+  const r=recetaActual();
+  const key='receta:'+Date.now();
+  try{
+    localStorage.setItem(key,JSON.stringify(r));
+    flash('💾 Receta guardada: '+r.platillo);
+    cargarLista();
+  }catch(e){
+    alert('No se pudo guardar en este momento. Tus datos siguen visibles en pantalla.');
+  }
+}
+
+function cargarLista(){
+  const cont=document.getElementById('savedList');
+  cont.innerHTML='';
+  const keys=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k&&k.indexOf('receta:')===0)keys.push(k);
+  }
+  if(!keys.length){cont.innerHTML='<div class="empty">Aún no has guardado recetas. Llena los datos y toca “Guardar”.</div>';return;}
+  keys.sort().reverse();
+  for(const k of keys){
+    try{
+      const raw=localStorage.getItem(k);
+      if(!raw)continue;
+      const r=JSON.parse(raw);
+      const div=document.createElement('div');
+      div.className='saved-item';
+      div.innerHTML=`
+        <div style="flex:1">
+          <div class="nm">${r.platillo}</div>
+          <div class="meta">Costo Q${r.costo} · Precio Q${r.precio}</div>
+        </div>
+        <button class="btn btn-dark mini">Abrir</button>
+        <button class="btn btn-ghost mini" style="color:var(--rojo)">Borrar</button>`;
+      div.querySelectorAll('button')[0].onclick=()=>abrir(r);
+      div.querySelectorAll('button')[1].onclick=()=>borrar(k);
+      cont.appendChild(div);
+    }catch(e){}
+  }
+}
+
+function abrir(r){
+  document.getElementById('platillo').value=r.platillo;
+  document.getElementById('porciones').value=r.porciones;
+  document.getElementById('empaque').value=r.empaque;
+  document.getElementById('gas').value=r.gas;
+  document.getElementById('mano').value=r.mano;
+  document.getElementById('otros').value=r.otros;
+  document.getElementById('foodcost').value=r.foodcost;
+  document.getElementById('ingredientes').innerHTML='';
+  (r.ings||[]).forEach(i=>addIng(i));
+  if(!(r.ings||[]).length)addIng();
+  calc();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function borrar(k){
+  if(!confirm('¿Borrar esta receta?'))return;
+  try{localStorage.removeItem(k);cargarLista();}catch(e){}
+}
+
+function nueva(){
+  document.getElementById('platillo').value='';
+  document.getElementById('porciones').value=1;
+  document.getElementById('ingredientes').innerHTML='';
+  addIng({nom:'Papa'});addIng({nom:'Salchicha'});
+  calc();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+let flashT;
+function flash(msg){
+  let f=document.getElementById('flash');
+  if(!f){
+    f=document.createElement('div');f.id='flash';
+    f.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--negro);color:#fff;padding:12px 20px;border-radius:30px;font-weight:700;font-size:14px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.25);border:2px solid var(--amarillo)';
+    document.body.appendChild(f);
+  }
+  f.textContent=msg;f.style.opacity='1';
+  clearTimeout(flashT);
+  flashT=setTimeout(()=>f.style.opacity='0',2200);
+}
+
+function exportarPDF(){
+  calc();
+  const platillo=document.getElementById('platillo').value||'Sin nombre';
+  const porciones=Math.max(1,parseInt(document.getElementById('porciones').value)||1);
+  const fecha=new Date().toLocaleDateString('es-GT',{day:'numeric',month:'long',year:'numeric'});
+
+  let filas='',ingTotal=0;
+  document.querySelectorAll('.ing-row').forEach(r=>{
+    const nom=r.querySelector('.i-nom').value||'—';
+    const costo=parseFloat(r.querySelector('.i-costo').value)||0;
+    const cant=parseFloat(r.querySelector('.i-cant').value)||0;
+    const uni=r.querySelector('.i-uni').value;
+    const usa=parseFloat(r.querySelector('.i-usa').value)||0;
+    const c=(cant>0)?(costo/cant)*usa:0;
+    ingTotal+=c;
+    if(nom==='—'&&c===0)return;
+    filas+=`<tr><td>${nom}</td><td>Q${costo.toFixed(2)} / ${cant} ${uni}</td><td>${usa} ${uni}</td><td class="r">Q${c.toFixed(2)}</td></tr>`;
+  });
+
+  const empaque=parseFloat(document.getElementById('empaque').value)||0;
+  const gas=parseFloat(document.getElementById('gas').value)||0;
+  const mano=parseFloat(document.getElementById('mano').value)||0;
+  const otros=parseFloat(document.getElementById('otros').value)||0;
+  const extra=empaque+gas+mano+otros;
+  const ingPorPorcion=ingTotal/porciones;
+  const costoTotal=ingPorPorcion+extra;
+  const fc=parseInt(document.getElementById('foodcost').value);
+  const precio=costoTotal/(fc/100);
+  const ganancia=precio-costoTotal;
+  const margen=precio>0?(ganancia/precio*100):0;
+
+  let extraFilas='';
+  if(empaque)extraFilas+=`<tr><td>Empaque</td><td></td><td></td><td class="r">Q${empaque.toFixed(2)}</td></tr>`;
+  if(gas)extraFilas+=`<tr><td>Gas / energía</td><td></td><td></td><td class="r">Q${gas.toFixed(2)}</td></tr>`;
+  if(mano)extraFilas+=`<tr><td>Mano de obra</td><td></td><td></td><td class="r">Q${mano.toFixed(2)}</td></tr>`;
+  if(otros)extraFilas+=`<tr><td>Otros</td><td></td><td></td><td class="r">Q${otros.toFixed(2)}</td></tr>`;
+
+  document.getElementById('printSheet').innerHTML=`
+    <div class="phero">
+      <div class="plogo">MISTER <span>PAPA</span></div>
+      <div class="pkind">Ficha de Costos de Menú</div>
+    </div>
+    <div class="pbody">
+      <div class="ptitle">${platillo}</div>
+      <div class="pmeta">Receta para ${porciones} porción${porciones>1?'es':''} · ${fecha}</div>
+
+      <div class="psec">Ingredientes</div>
+      <table class="ptab">
+        <thead><tr><th>Ingrediente</th><th>Compra</th><th>Usa</th><th class="r">Costo</th></tr></thead>
+        <tbody>
+          ${filas||'<tr><td colspan="4" style="color:#6b6b6b">Sin ingredientes anotados</td></tr>'}
+          <tr class="total"><td colspan="3">Total ingredientes (${porciones} porc.)</td><td class="r">Q${ingTotal.toFixed(2)}</td></tr>
+          ${porciones>1?`<tr class="total"><td colspan="3">Ingredientes por porción</td><td class="r">Q${ingPorPorcion.toFixed(2)}</td></tr>`:''}
+        </tbody>
+      </table>
+
+      ${extraFilas?`<div class="psec">Costos adicionales por porción</div>
+      <table class="ptab"><tbody>${extraFilas}
+        <tr class="total"><td colspan="3">Total adicionales</td><td class="r">Q${extra.toFixed(2)}</td></tr>
+      </tbody></table>`:''}
+
+      <div class="pbig">
+        <div class="pbox">
+          <div class="pl">Costo por porción</div>
+          <div class="pv">Q${costoTotal.toFixed(2)}</div>
+        </div>
+        <div class="pbox gold">
+          <div class="pl">Precio sugerido de venta</div>
+          <div class="pv">Q${precio.toFixed(2)}</div>
+        </div>
+      </div>
+
+      <div class="pchips">
+        <div>Ganancia por porción<br><b>Q${ganancia.toFixed(2)}</b></div>
+        <div>Margen bruto<br><b>${margen.toFixed(0)}%</b></div>
+        <div>Food cost objetivo<br><b>${fc}%</b></div>
+      </div>
+
+      <div class="pfoot">Mister Papa · @MisterPapa.GT · Precios en Quetzales (Q) · Documento generado para uso interno</div>
+    </div>`;
+
+  window.print();
+}
+
+/* arranque con ejemplo de Salchipapa Clásica */
+document.getElementById('platillo').value='Salchipapa Clásica';
+addIng({nom:'Papa',costo:'6.00',cant:'1',uni:'libra',usa:'0.5'});
+addIng({nom:'Salchicha',costo:'18.00',cant:'10',uni:'unidad',usa:'2'});
+addIng({nom:'Salsas / aderezos',costo:'25.00',cant:'1',uni:'L',usa:'0.05'});
+calc();
+cargarLista();
+</script>
+</body>
+</html>
